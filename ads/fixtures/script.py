@@ -1,12 +1,37 @@
+# importing the required libraries
+import csv
 import json
 
-import pandas
 
-data_cat=pandas.read_csv("/Users/marinalarutina/PycharmProjects/hw__27/data/categories.csv",sep=",", encoding='utf-8').to_json()
-data_ad=pandas.read_csv("/Users/marinalarutina/PycharmProjects/hw__27/data/ads.csv", sep=",").to_json()
+# defining the function to convert CSV file to JSON file
+def convjson(csvFilename, jsonFilename):
+    # creating a dictionary
+    mydata = {}
 
-with open("/Users/marinalarutina/PycharmProjects/hw__27/ads/fixtures/data_cat.json", "w", encoding='utf-8') as write_file:
-    json.dump(data_cat, write_file,ensure_ascii=False)
+    # reading the data from CSV file
+    with open(csvFilename, encoding='utf-8') as csvfile:
+        csvRead = csv.DictReader(csvfile)
 
-with open("/Users/marinalarutina/PycharmProjects/hw__27/ads/fixtures/data_ad.json", "w", encoding='utf-8') as write_file:
-    json.dump(data_ad, write_file,ensure_ascii=False)
+        # Converting rows into dictionary and adding it to data
+        for rows in csvRead:
+            mykey = rows['id']
+            mydata[mykey] = rows
+
+            # dumping the data
+    with open(jsonFilename, 'w', encoding='utf-8') as jsonfile:
+        jsonfile.write(json.dumps(mydata, indent=4))
+
+    # filenames
+
+
+csvFilename = r'categories.csv'
+jsonFilename = r'json_cat.json'
+
+# Calling the convjson function
+convjson(csvFilename, jsonFilename)
+
+csvFilename = r'ads.csv'
+jsonFilename = r'json_ad.json'
+
+# Calling the convjson function
+convjson(csvFilename, jsonFilename)
