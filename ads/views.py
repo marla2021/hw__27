@@ -1,6 +1,5 @@
 import json
 
-import pandas as pandas
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -49,6 +48,7 @@ class CategoryDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
         category = self.get_object()
+
         return JsonResponse({
             "id": category.id,
             "name": category.name,
