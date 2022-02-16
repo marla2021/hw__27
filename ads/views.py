@@ -1,5 +1,6 @@
 import json
 
+import status as status
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -40,7 +41,7 @@ class CategoryView(View):
         return JsonResponse({
             "id": category.id,
             "name": category.name,
-        })
+        }, status=status.HTTP_201_CREATED)
 
 
 class CategoryDetailView(DetailView):
@@ -91,7 +92,7 @@ class AdView(View):
             "description": ad.description,
             "address": ad.address,
             "is_published": ad.is_published,
-        })
+        }, status=status.HTTP_201_CREATED)
 
 
 class AdDetailView(DetailView):
