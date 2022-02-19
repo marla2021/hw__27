@@ -1,7 +1,7 @@
 [
 {
     "pk": 1,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "1",
         "first_name": "\u041f\u0430\u0432\u0435\u043b",
@@ -14,7 +14,7 @@
     }},
     {
     "pk": 2,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields":
      {
         "id": "2",
@@ -28,7 +28,7 @@
     }},
     {
     "pk": 3,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "3",
         "first_name": "\u0418\u0432\u0430\u043d",
@@ -41,7 +41,7 @@
     }},
     {
     "pk": 4,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "4",
         "first_name": "\u041c\u0430\u0440\u0438\u043d\u0430",
@@ -54,7 +54,7 @@
     }},
     {
     "pk": 5,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "5",
         "first_name": "\u0413\u0430\u043b\u0438\u043d\u0430",
@@ -67,7 +67,7 @@
     }},
     {
     "pk": 6,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "6",
         "first_name": "\u041f\u0435\u0442\u0440",
@@ -80,7 +80,7 @@
     }},
     {
     "pk": 8,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "7",
         "first_name": "\u041d\u0438\u043a\u0438\u0442\u0430",
@@ -93,7 +93,7 @@
     }},
     {
     "pk": 8,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "8",
         "first_name": "\u0412\u0438\u043e\u043b\u0435\u0442\u0442\u0430",
@@ -106,7 +106,7 @@
     }},
     {
     "pk": 9,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields": {
         "id": "9",
         "first_name": "\u0413\u0443\u043b\u044c\u043d\u0430\u0440\u0430",
@@ -119,7 +119,7 @@
     }},
    {
     "pk": 10,
-     "model": "ads.ad",
+     "model": "ads.user",
      "fields":{
         "id": "10",
         "first_name": "\u0411\u043e\u0440\u0438\u0441",
