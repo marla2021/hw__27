@@ -6,6 +6,10 @@ from django.db import models
 class Category(models.Model):
     name = models.CharField(max_length=20)
 
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+
 
 class Ad(models.Model):
     name = models.CharField(max_length=50)
@@ -15,10 +19,19 @@ class Ad(models.Model):
     address = models.CharField(max_length=200)
     is_published = models.BooleanField(default=False)
 
-class Locatoin(models.Model):
+    class Meta:
+        verbose_name = "Объявление"
+        verbose_name_plural = "Объявления"
+
+
+class Location(models.Model):
     name = models.CharField(max_length=50)
     lat = models.FloatField()
     lng = models.FloatField()
+
+    class Meta:
+        verbose_name = "Локация"
+        verbose_name_plural = "Локации"
 
 
 class User(models.Model):
@@ -28,5 +41,9 @@ class User(models.Model):
     password = models.CharField(max_length=30)
     role = models.CharField(max_length=10)
     age = models.PositiveIntegerField()
-    location_id = models.PositiveIntegerField()
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
 
+
+    class Meta:
+        verbose_username = "Имя"
+        verbose_username_plural = "Имена"
