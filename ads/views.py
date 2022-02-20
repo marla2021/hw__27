@@ -314,7 +314,7 @@ class UserDetailView(DetailView):
             "password": user.password,
             "role": user.role,
             "age": user.role,
-            "location": user.location.name,
+            "location": user.location,
         })
 
 
