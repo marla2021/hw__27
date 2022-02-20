@@ -2,6 +2,7 @@ import json
 
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -352,3 +353,35 @@ class UserDeleteView(DeleteView):
         return JsonResponse({
             "status": "ok"
         }, status=200)
+
+
+class UserAdsView(View):
+    def get(self, request):
+        user_qs =Ad.objects.annotate(total_ads=Count("is_published"))
+
+        paginator = Paginator(user_qs, settings.TOTAL_ON_PAGE)
+        page_number =request.GET.get("page")
+        page_obj =paginator.get_page(page_number)
+
+        users = []
+        for user in page_obj:
+            users.append({
+                "id": user.id,
+                # "username": user.username,
+                # "first_name": user.first_name,
+                # "last_name": user.last_name,
+                # "role": user.role,
+                # "age": user.age,
+                # "location": user.location.name,
+                "total_ads": user.total_ads,
+            })
+
+        response = {
+            "items": users,
+            "total": page_obj.paginator.count,
+            "num_pages": page_obj.paginator.num_pages
+        }
+
+        return JsonResponse(response)
+
+
