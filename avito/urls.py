@@ -20,8 +20,8 @@ from ads import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('cat/',include("ads.urls")),
-    path('ad/', include("ads.urls")),
+    path('cat/',include("ads.urls_category")),
+    path('ad/', include("ads.urls_ad")),
 
 
 ]
