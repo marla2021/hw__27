@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from ads.models import Category, Ad
 
@@ -49,7 +49,7 @@ class CategoryCreateView(CreateView):
         return JsonResponse({
             "id": category.id,
             "name": category.name,
-        }, status=status.HTTP_201_CREATED)
+        })
 
 
 class CategoryDetailView(DetailView):
@@ -62,6 +62,37 @@ class CategoryDetailView(DetailView):
             "id": category.id,
             "name": category.name,
         })
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CategoryUpdateViev(UpdateView):
+    model = Category
+    fields = ["name"]
+
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+
+        category_data = json.loads(request.body)
+        self.object.name = category_data["name"]
+        self.object.save()
+
+        return JsonResponse({
+            "id": self.object.id,
+            "name": self.object.name,
+        })
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CategoryDeleteViev(DeleteView):
+    model = Category
+    success_url = "/"
+
+    def delete(self, request, *args, **kwargs):
+        super().delete(request, *args, **kwargs)
+
+        return JsonResponse({
+            "status": "ok"
+        }, status=200)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
