@@ -45,5 +45,5 @@ class User(models.Model):
 
 
     class Meta:
-        verbose_username = "Имя"
-        verbose_username_plural = "Имена"
+        verbose_name = "Имя"
+        verbose_name_plural = "Имена"
