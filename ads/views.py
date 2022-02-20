@@ -227,7 +227,7 @@ class AdImageView(UpdateView):
             "logo" : self.object.logo.url
         })
 
-@method_decorator(csrf_exempt, name='dispatch')
+
 class UserListView(ListView):
     model = User
 
@@ -238,13 +238,13 @@ class UserListView(ListView):
         for user in users:
             response.append({
                 "id": user.id,
-                "first_name": user.name,
-                "last_name": user.author,
-                "username": user.price,
-                "password": user.description,
-                "role": user.address,
-                "age": user.is_published,
-                "location": user.is_published,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "username": user.username,
+                "password": user.username,
+                "role": user.role,
+                "age": user.age,
+                "location": user.location,
             })
 
         return JsonResponse(response, safe=False)
