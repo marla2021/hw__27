@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView, CreateView
 
 from ads.models import Category, Ad
 
@@ -19,8 +19,10 @@ def root(request):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class CategoryView(View):
-    def get(self, request):
+class CategoryListView(ListView):
+    model = Category
+
+    def get(self, request, *args, **kwargs):
         categories = Category.objects.all()
 
         response = []
@@ -32,7 +34,13 @@ class CategoryView(View):
 
         return JsonResponse(response, safe=False)
 
-    def post(self, request):
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CategoryCreateView(CreateView):
+    model = Category
+    fields = ["name"]
+
+    def post(self, request, *args, **kwargs):
         category_data = json.loads(request.body)
 
         category = Category.objects.create(
