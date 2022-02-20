@@ -196,3 +196,23 @@ class AdDeleteView(DeleteView):
         return JsonResponse({
             "status": "ok"
         }, status=200)
+
+class AdImageView(UpdateView):
+    model = Ad
+    fields = ["name", "author", "price", "description", "address", "is_published", "logo"]
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.logo = request.FILES["logo"]
+        self.object.save()
+
+        return JsonResponse({
+            "id": self.object.id,
+            "name": self.object.name,
+            "author": self.object.author,
+            "price": self.object.price,
+            "description": self.object.description,
+            "address": self.object.address,
+            "is_published": self.object.is_published,
+            "logo" : self.object.logo
+        })
