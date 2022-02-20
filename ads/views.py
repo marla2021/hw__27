@@ -214,5 +214,5 @@ class AdImageView(UpdateView):
             "description": self.object.description,
             "address": self.object.address,
             "is_published": self.object.is_published,
-            "logo" : self.object.logo
+            "logo" : self.object.logo.url
         })
