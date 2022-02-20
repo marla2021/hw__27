@@ -18,6 +18,7 @@ class Ad(models.Model):
     description = models.TextField(max_length=1000, null=True)
     address = models.CharField(max_length=200)
     is_published = models.BooleanField(default=False)
+    logo = models.ImageField(upload_to="upload_image/", null=True)
 
     class Meta:
         verbose_name = "Объявление"

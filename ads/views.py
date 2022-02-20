@@ -10,12 +10,10 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView, D
 from ads.models import Category, Ad
 
 
-
 def root(request):
     return JsonResponse({
         "status": "ok"
     })
-
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -65,7 +63,7 @@ class CategoryDetailView(DetailView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class CategoryUpdateViev(UpdateView):
+class CategoryUpdateView(UpdateView):
     model = Category
     fields = ["name"]
 
@@ -83,7 +81,7 @@ class CategoryUpdateViev(UpdateView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class CategoryDeleteViev(DeleteView):
+class CategoryDeleteView(DeleteView):
     model = Category
     success_url = "/"
 
@@ -96,8 +94,10 @@ class CategoryDeleteViev(DeleteView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class AdView(View):
-    def get(self, request):
+class AdListView(ListView):
+    model = Ad
+
+    def get(self, request, *args, **kwargs):
         ads = Ad.objects.all()
 
         response = []
@@ -111,7 +111,14 @@ class AdView(View):
 
         return JsonResponse(response, safe=False)
 
-    def post(self, request):
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AdCreateView(CreateView):
+    model = Ad
+    fields = ["name", "author", "price", "description", "address", "is_published"]
+
+
+    def post(self, request, *args, **kwargs):
         ad_data = json.loads(request.body)
 
         ad = Ad.objects.create(
@@ -149,3 +156,43 @@ class AdDetailView(DetailView):
             "address": ad.address,
             "is_published": ad.is_published,
         })
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AdUpdateView(UpdateView):
+    model = Ad
+    fields = ["name", "author", "price", "description", "address", "is_published"]
+
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+
+        ad_data = json.loads(request.body)
+        self.object.name = ad_data["name"]
+        self.object.author = ad_data["author"]
+        self.object.price = ad_data["price"]
+        self.object.description = ad_data["description"]
+        self.object.address = ad_data["address"]
+        self.object.is_published = ad_data["is_published"]
+        self.object.save()
+
+        return JsonResponse({
+            "id": self.object.id,
+            "name": self.object.name,
+            "author": self.object.author,
+            "price": self.object.price,
+            "description": self.object.description,
+            "address": self.object.address,
+            "is_published": self.object.is_published
+        })
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AdDeleteView(DeleteView):
+    model = Ad
+    success_url = "/"
+
+    def delete(self, request, *args, **kwargs):
+        super().delete(request, *args, **kwargs)
+
+        return JsonResponse({
+            "status": "ok"
+        }, status=200)
