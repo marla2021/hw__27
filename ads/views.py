@@ -1,6 +1,7 @@
 import json
 
-
+from django.conf import settings
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -98,17 +99,27 @@ class AdListView(ListView):
     model = Ad
 
     def get(self, request, *args, **kwargs):
-        ads = Ad.objects.all()
+        super().get(request, *args, **kwargs)
 
-        response = []
-        for ad in ads:
-            response.append({
+        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+
+
+        ads_list = []
+        for ad in page_obj:
+            ads_list.append({
                 "id": ad.id,
                 "name": ad.name,
                 "author": ad.author,
                 "price": ad.price,
             })
-
+        response = {
+            "items": ads_list,
+            "total": page_obj.paginator.count,
+            "num_pages": page_obj.paginator.num_pages
+        }
         return JsonResponse(response, safe=False)
 
 
@@ -116,7 +127,6 @@ class AdListView(ListView):
 class AdCreateView(CreateView):
     model = Ad
     fields = ["name", "author", "price", "description", "address", "is_published"]
-
 
     def post(self, request, *args, **kwargs):
         ad_data = json.loads(request.body)
