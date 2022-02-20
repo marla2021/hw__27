@@ -229,7 +229,7 @@ class AdImageView(UpdateView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserListView(ListView):
-    model = Category
+    model = User
 
     def get(self, request, *args, **kwargs):
         users = User.objects.all()
