@@ -197,6 +197,8 @@ class AdDeleteView(DeleteView):
             "status": "ok"
         }, status=200)
 
+
+@method_decorator(csrf_exempt, name='dispatch')
 class AdImageView(UpdateView):
     model = Ad
     fields = ["name", "author", "price", "description", "address", "is_published", "logo"]
