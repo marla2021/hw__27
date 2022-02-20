@@ -21,8 +21,15 @@ def root(request):
 class CategoryListView(ListView):
     model = Category
 
+
     def get(self, request, *args, **kwargs):
         categories = Category.objects.all()
+
+        search_text = request.GET.get("name", None)
+        if search_text:
+            categories = categories.filter(name=search_text)
+
+        categories = categories.order_by("name")
 
         response = []
         for category in categories:
@@ -100,6 +107,12 @@ class AdListView(ListView):
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
+
+        search_text = request.GET.get("price",None)
+        if search_text:
+            self.object_list = self.object_list.filter(price= search_text)
+
+        self.object_list = self.object_list.order_by("-price")
 
         paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
         page_number = request.GET.get("page")
@@ -234,6 +247,12 @@ class UserListView(ListView):
     def get(self, request, *args, **kwargs):
         users = User.objects.all()
 
+        search_text = request.GET.get("username",None)
+        if search_text:
+            users = users.filter(username= search_text)
+
+        users = users.order_by("username")
+
         response = []
         for user in users:
             response.append({
@@ -241,7 +260,7 @@ class UserListView(ListView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "username": user.username,
-                "password": user.username,
+                "password": user.password,
                 "role": user.role,
                 "age": user.age,
                 "location": user.location,
@@ -277,7 +296,7 @@ class UserCreateView(CreateView):
             "password": user.description,
             "role": user.address,
             "age": user.is_published,
-            "location": user.is_published,
+            "location": user.location,
         }, status=status.HTTP_201_CREATED)
 
 class UserDetailView(DetailView):
@@ -288,13 +307,13 @@ class UserDetailView(DetailView):
 
         return JsonResponse({
             "id": user.id,
-            "first_name": user.name,
-            "last_name": user.author,
-            "username": user.price,
-            "password": user.description,
-            "role": user.address,
-            "age": user.is_published,
-            "location": user.is_published,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "username": user.username,
+            "password": user.password,
+            "role": user.role,
+            "age": user.role,
+            "location": user.location.name,
         })
 
 
