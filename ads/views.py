@@ -8,7 +8,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
-from ads.models import Category, Ad
+from ads.models import Category, Ad, User
 
 
 def root(request):
@@ -104,8 +104,6 @@ class AdListView(ListView):
         paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
-
-
 
         ads_list = []
         for ad in page_obj:
@@ -228,3 +226,56 @@ class AdImageView(UpdateView):
             "is_published": self.object.is_published,
             "logo" : self.object.logo.url
         })
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UserListView(ListView):
+    model = Category
+
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+
+        response = []
+        for user in users:
+            response.append({
+                "id": user.id,
+                "first_name": user.name,
+                "last_name": user.author,
+                "username": user.price,
+                "password": user.description,
+                "role": user.address,
+                "age": user.is_published,
+                "location": user.is_published,
+            })
+
+        return JsonResponse(response, safe=False)
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UserCreateView(CreateView):
+    model = User
+    fields = ["first_name", "last_name", "username", "password", "role", "age", "location"]
+
+    def post(self, request, *args, **kwargs):
+        user_data = json.loads(request.body)
+
+        user = User.objects.create(
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
+            username=user_data["username"],
+            password=user_data["password"],
+            role=user_data["role"],
+            age=user_data["age"],
+            location=user_data["location"],
+        )
+
+        return JsonResponse({
+            "id": user.id,
+            "first_name": user.name,
+            "last_name": user.author,
+            "username": user.price,
+            "password": user.description,
+            "role": user.address,
+            "age": user.is_published,
+            "location": user.is_published,
+        }, status=status.HTTP_201_CREATED)
