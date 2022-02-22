@@ -20,19 +20,34 @@ class Location(models.Model):
         verbose_name = "Локация"
         verbose_name_plural = "Локации"
 
+    def __str__(self):
+        return self.name
+
 
 class User(models.Model):
+    ADMIN = "admin"
+    MODERATOR = "moderator"
+    MEMBER = "member"
+    ROLES = [
+        ("member", "Пользователь"),
+        ("moderator", "Модератор"),
+        ("admin", "Админ"),]
+
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=30)
     password = models.CharField(max_length=30)
-    role = models.CharField(max_length=10)
+    role = models.CharField(max_length=10, choices=ROLES)
     age = models.PositiveIntegerField()
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
+    location = models.ManyToManyField(Location)
 
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+        ordering = ["username"]
+
+    def __str__(self):
+        return self.username
 
 
 class Ad(models.Model):
