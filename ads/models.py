@@ -10,6 +10,8 @@ class Category(models.Model):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
+    def __str__(self):
+        return self.name
 
 class Location(models.Model):
     name = models.CharField(max_length=50)
@@ -62,3 +64,6 @@ class Ad(models.Model):
     class Meta:
         verbose_name = "Объявление"
         verbose_name_plural = "Объявления"
+
+    def __str__(self):
+        return self.name
