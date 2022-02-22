@@ -241,7 +241,7 @@ class AdImageView(UpdateView):
             "logo" : self.object.logo.url
         })
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class UserListView(ListView):
     model = User
 

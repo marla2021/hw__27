@@ -1,17 +1,6 @@
 
-
 from django.db import models
 
-
-class Category(models.Model):
-    name = models.CharField(max_length=20)
-
-    class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
-
-    def __str__(self):
-        return self.name
 
 class Location(models.Model):
     name = models.CharField(max_length=50)
@@ -39,7 +28,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=30)
     password = models.CharField(max_length=30)
-    role = models.CharField(max_length=10, choices=ROLES)
+    role = models.CharField(max_length=10, choices=ROLES, default="member")
     age = models.PositiveIntegerField()
     location = models.ManyToManyField(Location)
 
@@ -52,9 +41,20 @@ class User(models.Model):
         return self.username
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+
+    def __str__(self):
+        return self.name
+
+
 class Ad(models.Model):
     name = models.CharField(max_length=50)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     price = models.PositiveIntegerField()
     description = models.TextField(max_length=1000, null=True)
     address = models.CharField(max_length=200)
@@ -67,3 +67,14 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+
+
+
+
+
+
+
+
