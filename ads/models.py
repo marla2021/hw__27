@@ -11,20 +11,6 @@ class Category(models.Model):
         verbose_name_plural = "Категории"
 
 
-class Ad(models.Model):
-    name = models.CharField(max_length=50)
-    author = models.CharField(max_length=30)
-    price = models.PositiveIntegerField()
-    description = models.TextField(max_length=1000, null=True)
-    address = models.CharField(max_length=200)
-    is_published = models.BooleanField(default=False)
-    logo = models.ImageField(upload_to="upload_image/", null=True)
-
-    class Meta:
-        verbose_name = "Объявление"
-        verbose_name_plural = "Объявления"
-
-
 class Location(models.Model):
     name = models.CharField(max_length=50)
     lat = models.FloatField()
@@ -44,7 +30,20 @@ class User(models.Model):
     age = models.PositiveIntegerField()
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
 
-
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+
+
+class Ad(models.Model):
+    name = models.CharField(max_length=50)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    price = models.PositiveIntegerField()
+    description = models.TextField(max_length=1000, null=True)
+    address = models.CharField(max_length=200)
+    is_published = models.BooleanField(default=False)
+    logo = models.ImageField(upload_to="upload_image/", null=True)
+
+    class Meta:
+        verbose_name = "Объявление"
+        verbose_name_plural = "Объявления"
