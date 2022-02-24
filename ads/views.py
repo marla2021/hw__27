@@ -303,7 +303,7 @@ class UserCreateView(CreateView):
             "password": user.description,
             "role": user.address,
             "age": user.is_published,
-            "location_id": user.location_id,
+            "location_id": list(user.location.all().values_list('name', flat=True)),
         }, status=status.HTTP_201_CREATED)
 
 class UserDetailView(DetailView):
@@ -320,7 +320,7 @@ class UserDetailView(DetailView):
             "password": user.password,
             "role": user.role,
             "age": user.role,
-            "location_id": [loc.name for loc in user.location_id.all()],
+            "location_id": list(user.location.all().values_list('name', flat=True)),
         })
 
 
@@ -344,7 +344,7 @@ class UserUpdateView(UpdateView):
             "password":  self.object.password,
             "role":  self.object.role,
             "age":  self.object.age,
-            "location_id": self.object.location_id,
+            "location_id": self.object.location,
         })
 
 
@@ -361,21 +361,22 @@ class UserDeleteView(DeleteView):
         }, status=200)
 
 
-class UserAdsView(View):
-    def get(self, request):
-        user_qs =Ad.objects.annotate(total_ads=Count("is_published"))
-
-        paginator = Paginator(user_qs, settings.TOTAL_ON_PAGE)
-        page_number =request.GET.get("page")
-        page_obj =paginator.get_page(page_number)
+class UserAdsView(ListView):
+    model = User
+    def get(self, request, *args, **kwargs):
+        super().get(request, *args, **kwargs)
+        self.object_list = self.object_list.select_related("user").prefetch_related("user").annotate(total_ads=Count("is_published"))
+        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
 
         users = []
         for user in page_obj:
             users.append({
                 "id": user.id,
-                "username": user.username,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
+                "username": user.username,
                 "role": user.role,
                 "age": user.age,
                 "location": list(user.location.all().values_list('name', flat=True)),

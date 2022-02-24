@@ -25,6 +25,7 @@ urlpatterns = [
     path('cat/',include("ads.urls_category")),
     path('ad/', include("ads.urls_ad")),
     path('user/', include("ads.urls_user")),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
