@@ -178,7 +178,7 @@ class AdDetailView(DetailView):
             "price": ad.price,
             "description": ad.description,
             "is_published": ad.is_published,
-            "image": ad.image,
+            "image": ad.image.url if ad.image else None,
             "category_id": ad.category_id,
         })
 
@@ -270,7 +270,7 @@ class UserListView(ListView):
                 "password": user.password,
                 "role": user.role,
                 "age": user.age,
-                "location_id": [loc.name for loc in user.location_id.all()],
+                "location_id": list(user.location.all().values_list('name', flat=True)),
             })
 
         return JsonResponse(response, safe=False)
@@ -378,7 +378,7 @@ class UserAdsView(View):
                 "last_name": user.last_name,
                 "role": user.role,
                 "age": user.age,
-                "location_id": [loc.name for loc in user.location_id.all()],
+                "location": list(user.location.all().values_list('name', flat=True)),
                 "total_ads": user.total_ads,
             })
 
