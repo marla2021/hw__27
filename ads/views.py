@@ -124,7 +124,7 @@ class AdListView(ListView):
             ads_list.append({
                 "id": ad.id,
                 "name": ad.name,
-                "author": ad.author,
+                "author_id": ad.author_id,
                 "price": ad.price,
             })
         response = {
@@ -138,28 +138,30 @@ class AdListView(ListView):
 @method_decorator(csrf_exempt, name='dispatch')
 class AdCreateView(CreateView):
     model = Ad
-    fields = ["name", "author", "price", "description", "address", "is_published"]
+    fields = ["name", "author_id", "price", "description", "is_published", "image", "category_id"]
 
     def post(self, request, *args, **kwargs):
         ad_data = json.loads(request.body)
 
         ad = Ad.objects.create(
             name=ad_data["name"],
-            author=ad_data["author"],
+            author_id=ad_data["author_id"],
             price=ad_data["price"],
             description=ad_data["description"],
-            address=ad_data["address"],
             is_published=ad_data["is_published"],
+            image=ad_data["image"],
+            category_id=ad_data["category_id"],
         )
 
         return JsonResponse({
             "id": ad.id,
             "name": ad.name,
-            "author": ad.author,
+            "author_id": ad.author_id,
             "price": ad.price,
             "description": ad.description,
-            "address": ad.address,
             "is_published": ad.is_published,
+            "image": ad.image,
+            "category_id": ad.category_id,
         }, status=status.HTTP_201_CREATED)
 
 
@@ -172,38 +174,42 @@ class AdDetailView(DetailView):
         return JsonResponse({
             "id": ad.id,
             "name": ad.name,
-            "author": ad.author,
+            "author_id": ad.author_id,
             "price": ad.price,
             "description": ad.description,
-            "address": ad.address,
             "is_published": ad.is_published,
+            "image": ad.image,
+            "category_id": ad.category_id,
         })
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdUpdateView(UpdateView):
     model = Ad
-    fields = ["name", "author", "price", "description", "address", "is_published"]
+    fields = ["name", "author_id", "price", "description", "is_published", "image", "category_id"]
 
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
 
         ad_data = json.loads(request.body)
         self.object.name = ad_data["name"]
-        self.object.author = ad_data["author"]
+        self.object.author_id = ad_data["author_id"]
         self.object.price = ad_data["price"]
         self.object.description = ad_data["description"]
-        self.object.address = ad_data["address"]
         self.object.is_published = ad_data["is_published"]
+        self.object.image = ad_data["image"],
+        self.object.category_id = ad_data["category_id"],
+
         self.object.save()
 
         return JsonResponse({
             "id": self.object.id,
             "name": self.object.name,
-            "author": self.object.author,
+            "author_id": self.object.author_id,
             "price": self.object.price,
             "description": self.object.description,
-            "address": self.object.address,
-            "is_published": self.object.is_published
+            "is_published": self.object.is_published,
+            "image": self.object.image,
+            "category_id": self.object.category_id,
         })
 
 
@@ -223,22 +229,22 @@ class AdDeleteView(DeleteView):
 @method_decorator(csrf_exempt, name='dispatch')
 class AdImageView(UpdateView):
     model = Ad
-    fields = ["name", "author", "price", "description", "address", "is_published", "logo"]
+    fields = ["name", "author_id", "price", "description", "is_published", "image", "category_id"]
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.object.logo = request.FILES["logo"]
+        self.object.logo = request.FILES["image"]
         self.object.save()
 
         return JsonResponse({
             "id": self.object.id,
             "name": self.object.name,
-            "author": self.object.author,
+            "author_id": self.object.author_id,
             "price": self.object.price,
             "description": self.object.description,
-            "address": self.object.address,
             "is_published": self.object.is_published,
-            "logo" : self.object.logo.url
+            "image": self.object.image.url,
+            "category_id": self.object.category_id,
         })
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -264,7 +270,7 @@ class UserListView(ListView):
                 "password": user.password,
                 "role": user.role,
                 "age": user.age,
-                "location": user.location,
+                "location_id": [loc.name for loc in user.location_id.all()],
             })
 
         return JsonResponse(response, safe=False)
@@ -274,7 +280,7 @@ class UserListView(ListView):
 @method_decorator(csrf_exempt, name='dispatch')
 class UserCreateView(CreateView):
     model = User
-    fields = ["first_name", "last_name", "username", "password", "role", "age", "location"]
+    fields = ["first_name", "last_name", "username", "password", "role", "age", "location_id"]
 
     def post(self, request, *args, **kwargs):
         user_data = json.loads(request.body)
@@ -286,7 +292,7 @@ class UserCreateView(CreateView):
             password=user_data["password"],
             role=user_data["role"],
             age=user_data["age"],
-            location=user_data["location"],
+            location_id=user_data["location_id"],
         )
 
         return JsonResponse({
@@ -297,7 +303,7 @@ class UserCreateView(CreateView):
             "password": user.description,
             "role": user.address,
             "age": user.is_published,
-            "location": user.location,
+            "location_id": user.location_id,
         }, status=status.HTTP_201_CREATED)
 
 class UserDetailView(DetailView):
@@ -314,14 +320,14 @@ class UserDetailView(DetailView):
             "password": user.password,
             "role": user.role,
             "age": user.role,
-            "location": user.location,
+            "location_id": [loc.name for loc in user.location_id.all()],
         })
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserUpdateView(UpdateView):
     model = User
-    fields = ["first_name", "last_name", "username", "password", "role", "age", "location" ]
+    fields = ["first_name", "last_name", "username", "password", "role", "age", "location_id" ]
 
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
@@ -338,7 +344,7 @@ class UserUpdateView(UpdateView):
             "password":  self.object.password,
             "role":  self.object.role,
             "age":  self.object.age,
-            "location": self.object.location,
+            "location_id": self.object.location_id,
         })
 
 
@@ -367,12 +373,12 @@ class UserAdsView(View):
         for user in page_obj:
             users.append({
                 "id": user.id,
-                # "username": user.username,
-                # "first_name": user.first_name,
-                # "last_name": user.last_name,
-                # "role": user.role,
-                # "age": user.age,
-                # "location": user.location.name,
+                "username": user.username,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "role": user.role,
+                "age": user.age,
+                "location_id": [loc.name for loc in user.location_id.all()],
                 "total_ads": user.total_ads,
             })
 

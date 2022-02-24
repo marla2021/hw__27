@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     lat = models.FloatField()
     lng = models.FloatField()
 
@@ -16,15 +16,12 @@ class Location(models.Model):
 
 
 class User(models.Model):
-    ADMIN = "admin"
-    MODERATOR = "moderator"
-    MEMBER = "member"
     ROLES = [
         ("member", "Пользователь"),
         ("moderator", "Модератор"),
-        ("admin", "Админ"),]
-
-    first_name = models.CharField(max_length=50)
+        ("admin", "Админ"),
+    ]
+    first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=30)
     password = models.CharField(max_length=30)
@@ -42,7 +39,7 @@ class User(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=30)
 
     class Meta:
         verbose_name = "Категория"
@@ -53,13 +50,13 @@ class Category(models.Model):
 
 
 class Ad(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     price = models.PositiveIntegerField()
-    description = models.TextField(max_length=1000, null=True)
-    address = models.CharField(max_length=200)
+    description = models.TextField(null=True)
     is_published = models.BooleanField(default=False)
-    logo = models.ImageField(upload_to="upload_image/", null=True)
+    image = models.ImageField(upload_to="upload_image/", null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = "Объявление"
