@@ -80,7 +80,7 @@ class CategoryUpdateView(UpdateView):
         super().post(request, *args, **kwargs)
 
         category_data = json.loads(request.body)
-        self.object.name = category_data["name"]
+        self.object.name = category_data.update_or_create(name= category_data["name"])
         self.object.save()
 
         return JsonResponse({
@@ -365,8 +365,8 @@ class UserAdsView(ListView):
     model = User
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
-        self.object_list = self.object_list.select_related("user").prefetch_related("user").annotate(total_ads=Count("is_published"))
-        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
+        user_qs = self.object_list.select_related("user").prefetch_related("ad").annotate(total_ads=Count("is_published"))
+        paginator = Paginator(user_qs, settings.TOTAL_ON_PAGE)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
