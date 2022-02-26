@@ -2,10 +2,9 @@ import json
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
@@ -363,15 +362,17 @@ class UserDeleteView(DeleteView):
 
 class UserAdsView(ListView):
     model = User
+    queryset = User.objects.all()
+
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
-        user_qs = self.object_list.select_related("user").prefetch_related("ad").annotate(total_ads=Count("ad"))
-        paginator = Paginator(user_qs, settings.TOTAL_ON_PAGE)
+        self.object_list = self.object_list.annotate(ads=Count('ad', filter=Q(ad__is_published=True)))
+        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
         users = []
-        for user in page_obj:
+        for user in self.object_list:
             users.append({
                 "id": user.id,
                 "first_name": user.first_name,
@@ -379,16 +380,12 @@ class UserAdsView(ListView):
                 "username": user.username,
                 "role": user.role,
                 "age": user.age,
-                "location": list(user.location.all().values_list('name', flat=True)),
-                "total_ads": user.total_ads,
+                "locations":list(user.location.all().values_list('name', flat=True)),
+                "total_ads": user.ads,
             })
-
         response = {
             "items": users,
             "total": page_obj.paginator.count,
             "num_pages": page_obj.paginator.num_pages
         }
-
-        return JsonResponse(response)
-
-
+        return JsonResponse(response, safe=False)
