@@ -365,7 +365,7 @@ class UserAdsView(ListView):
     model = User
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
-        user_qs = self.object_list.select_related("user").prefetch_related("ad").annotate(total_ads=Count("is_published"))
+        user_qs = self.object_list.select_related("user").prefetch_related("ad").annotate(total_ads=Count("ad"))
         paginator = Paginator(user_qs, settings.TOTAL_ON_PAGE)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
