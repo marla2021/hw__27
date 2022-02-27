@@ -22,7 +22,7 @@ class AdListView(ListView):
         if search_text:
             self.object_list = self.object_list.filter(price= search_text)
 
-        self.object_list = self.object_list.order_by("-price")
+        self.object_list = self.object_list.select_related('author').order_by("-price")
 
         paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
         page_number = request.GET.get("page")
@@ -82,8 +82,9 @@ class AdDetailView(DetailView):
 
         return JsonResponse({
             "id": ad.id,
-            "name":  list(ad.user.all().values_list('username', flat=True)),
+            "name":  ad.name,
             "author_id": ad.author_id,
+            "author": ad.author.first_name,
             "price": ad.price,
             "description": ad.description,
             "is_published": ad.is_published,
@@ -114,6 +115,7 @@ class AdUpdateView(UpdateView):
             "id": self.object.id,
             "name": self.object.name,
             "author_id": self.object.author_id,
+            "author": self.object.author.first_name,
             "price": self.object.price,
             "description": self.object.description,
             "is_published": self.object.is_published,

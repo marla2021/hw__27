@@ -52,7 +52,7 @@ class CategoryCreateView(CreateView):
         return JsonResponse({
             "id": category.id,
             "name": category.name,
-        })
+        }, status=status.HTTP_201_CREATED)
 
 
 class CategoryDetailView(DetailView):
