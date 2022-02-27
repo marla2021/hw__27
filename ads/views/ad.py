@@ -151,6 +151,7 @@ class AdImageView(UpdateView):
             "id": self.object.id,
             "name": self.object.name,
             "author_id": self.object.author_id,
+            "author": self.object.author.first_name,
             "price": self.object.price,
             "description": self.object.description,
             "is_published": self.object.is_published,
