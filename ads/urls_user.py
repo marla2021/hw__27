@@ -1,12 +1,13 @@
 from django.urls import path
 
 from ads import views
+from ads.views import user
 
 urlpatterns = [
-    path('', views.UserListView.as_view()),
-    path('create/', views.UserCreateView.as_view()),
-    path('<int:pk>', views.UserDetailView.as_view()),
-    path('<int:pk>/update/', views.UserUpdateView.as_view()),
-    path('<int:pk>/delete/', views.UserDeleteView.as_view()),
-    path('by_user/', views.UserAdsView.as_view()),
+    path('', user.UserListView.as_view()),
+    path('create/', user.UserCreateView.as_view()),
+    path('<int:pk>', user.UserDetailView.as_view()),
+    path('<int:pk>/update/', user.UserUpdateView.as_view()),
+    path('<int:pk>/delete/', user.UserDeleteView.as_view()),
+    path('by_user/', user.UserAdsView.as_view()),
 ]
